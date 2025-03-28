@@ -1,9 +1,9 @@
 from functools import wraps
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, session
-from flask_login import login_required, login_user, logout_user
-from werkzeug.security import check_password_hash
-from models.usuario import Usuario
-from forms import loginForm
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
+from models.model import Usuario, db
+from forms import RegisterForm, loginForm
 
 
 auth_page = Blueprint('auth', __name__, static_folder="static", template_folder="templates")  
@@ -39,6 +39,27 @@ def login():
 
     return render_template('auth/login.html', form=form)
 
+
+@auth_page.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        hashed_password = generate_password_hash(password)
+
+        new_user = Usuario(username=username, password=hashed_password, id_rol=1)  # id_rol por defecto en 1
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Registro exitoso. Ahora puedes iniciar sesión.", "success")
+        return redirect(url_for('auth.login'))
+
+    return render_template('registro.html', form=form)
+
+
+
+
 @auth_page.route('/logout', methods=['POST'])
 @login_required
 def logout():
@@ -46,3 +67,15 @@ def logout():
     session.clear()
     flash("Has cerrado sesión exitosamente", "success")
     return redirect(url_for('auth.login'))
+
+
+def role_required(role_id):
+    """ Decorador para restringir acceso según el id_rol del usuario """
+    def decorator(f):
+        @wraps(f)
+        def wrapped_function(*args, **kwargs):
+            if not current_user.is_authenticated or current_user.id_rol != role_id:
+                abort(404)  # Mostrar error 404 en lugar de redirigir a login
+            return f(*args, **kwargs)
+        return wrapped_function
+    return decorator

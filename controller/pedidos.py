@@ -1,5 +1,5 @@
 from flask import Blueprint, request, session, flash, redirect, url_for
-from models.pizza import Venta, DetallePizza, IngredientePizza,db
+from models.model import Venta, DetallePizza, IngredientePizza,db
 from forms import ClienteForm
 
 pedidos_page = Blueprint('pedidos', __name__, static_folder="static", template_folder="templates")

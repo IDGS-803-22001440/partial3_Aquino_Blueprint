@@ -7,9 +7,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from config import DevelopmentConfig
 from flask import g
 from forms import PizzaForm, ClienteForm, loginForm, logoutForm
-from models.pizza import Venta, DetallePizza, IngredientePizza, db
-from models.usuario import Usuario, db
-from models.provedor import Provedor
+from models.model import Venta, DetallePizza, IngredientePizza, Usuario, db
+from controller.auth import role_required
 import json
 from controller.pedidos import agregarPizza, cargarCarrito, pedidos_page, vaciarCarrito
 from controller.auth import auth_page
@@ -41,6 +40,7 @@ def page_not_found(e):
 
 @app.route("/pizza", methods=['GET', 'POST'])
 @login_required
+@role_required(1)
 def pizza():
     
     pizza_form = PizzaForm()

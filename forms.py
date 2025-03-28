@@ -60,5 +60,17 @@ class logoutForm(FlaskForm):
 
 class PersonaForm(FlaskForm):
     nombre = StringField('Nombre', [validators.DataRequired(message="El nombre de provedor es requerido")])
-    telefono = IntegerField('Edad', [validators.DataRequired(message="El telefono de provedor es requerido")])
+    telefono = IntegerField('Telefono', [validators.DataRequired(message="El telefono de provedor es requerido")])
     submit = SubmitField('Guardar')
+
+class RegisterForm(FlaskForm):
+    username = StringField('Usuario', [validators.DataRequired(message="Este campo es obligatorio."),
+        validators.Length(min=4, max=20, message="El usuario debe tener entre 4 y 20 caracteres.")
+    ])
+    password = PasswordField('Contraseña', [validators.DataRequired(message="Este campo es obligatorio."),
+        validators.Length(min=6, message="La contraseña debe tener al menos 6 caracteres.")
+    ])
+    confirm_password = PasswordField('Confirmar Contraseña', [validators.DataRequired(message="Este campo es obligatorio."),
+        validators.EqualTo('password', message="Las contraseñas deben coincidir.")
+    ])
+    submit = SubmitField('Registrarse')

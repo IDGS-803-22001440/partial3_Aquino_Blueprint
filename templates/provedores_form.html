@@ -13,11 +13,11 @@
             {{ form.nombre(class="form-control") }}
         </div>
         <div class="mb-3">
-            {{ form.edad.label(class="form-label") }}
-            {{ form.edad(class="form-control") }}
+            {{ form.telefono.label(class="form-label") }}
+            {{ form.telefono(class="form-control") }}
         </div>
         <button type="submit" class="btn btn-success">{{ form.submit.label }}</button>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ url_for('provedor.provedores') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </body>
 </html>
